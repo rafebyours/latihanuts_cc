@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S3 Posts Gallery</title>
+  <style>
+    :root {
+      --primary: #4C566A;
+      --secondary: #81A1C1;
+      --accent: #EBCB8B;
+      --background: #ECEFF4;
+      --card: #FFFFFF;
+      --text: #2E3440;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: var(--background);
+      color: var(--text);
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      padding: 2rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--primary);
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--secondary);
+      margin-bottom: 2rem;
+    }
+    
+    .posts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .post {
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .post:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .post-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .post-content {
+      padding: 20px;
+    }
+    
+    .post-date {
+      font-size: 0.85rem;
+      color: var(--secondary);
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    .post-title {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .post-excerpt {
+      color: #666;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    
+    .post-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 15px;
+    }
+    
+    .tag {
+      background-color: #F0F0F0;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: var(--secondary);
+    }
+    
+    .read-more {
+      display: inline-block;
+      margin-top: 15px;
+      color: var(--secondary);
+      font-weight: 500;
+      text-decoration: none;
+      position: relative;
+    }
+    
+    .read-more::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--accent);
+      transition: width 0.3s ease;
+    }
+    
+    .read-more:hover::after {
+      width: 100%;
+    }
+    
+    .search-container {
+      display: flex;
+      background: var(--card);
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    .search-input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 1rem;
+      color: var(--text);
+      background: transparent;
+    }
+    
+    .search-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--secondary);
+    }
+    
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--secondary);
+      color: var(--secondary);
+      padding: 8px 16px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--secondary);
+      color: white;
+    }
+    
+    .accent-circle {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      opacity: 0.1;
+      top: -150px;
+      right: -100px;
+      z-index: 1;
+    }
+    
+    footer {
+      margin-top: 40px;
+      padding: 20px 0;
+      text-align: center;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      .posts-container {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="accent-circle"></div>
+    <div class="header-content">
+      <h1>Thoughts & Stories</h1>
+      <p class="subtitle">Kumpulan ide dan cerita menarik untuk inspirasi Anda</p>
+      
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Cari artikel...">
+        <button class="search-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="filters">
+        <button class="filter-btn active">Semua</button>
+        <button class="filter-btn">Teknologi</button>
+        <button class="filter-btn">Desain</button>
+        <button class="filter-btn">Kesehatan</button>
+        <button class="filter-btn">Perjalanan</button>
+      </div>
+    </div>
+  </header>
+  
+  <main>
+    <div class="posts-container">
+      <!-- Post 1 -->
+      <article class="post">
+        <img src="https://backup-blog-rafebyours.s3.us-east-1.amazonaws.com/cloud.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAWCYYAAPZEK6Z3QGX%2F20250419%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250419T094150Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAIaCXVzLWVhc3QtMSJFMEMCIHLah7%2Fl6aEj6Pj5hdePoeaY4DrDNnpBQ58EoFuRsJmgAh9yqQV8%2FUVpDkmMKKkV006ZBojUepITH8XWcPpFZSpUKugCCIv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNDE4MjcyNzczMTA2IgzhBPjZec1R392ocjIqvALIr5zNGeMKcQSB9H3n5stn%2BiA9Hcx5luC53z%2BuIGNZP%2FJUhBLiJpr5VqXEhNVBexz%2FoJKUhF8aIwwW3i7AZyJjWHrm5fnE9mCG1FTx6D63ip%2BNJH6EuQffs9ZCNKsULicDOwe5aNzxENlbNNciShAn5CNXBAtAUVuE3uosxf9s88JbupaX01o%2Fur1lpI6UxdlaKJO2dDx3sVX0GS4N6DpINJTAKX8aJy%2BM5AQ95ugbOkNPZDpyRJBXmM%2FUpDj2l5%2FVzAKFiuFne3Q6LHIlN20nOdNK2Y5I8rHNE3exZ3pOPOdrhFiN4BTR3o7OWGzzyS%2BvRdb04KmB6DTk2WNQgvyV%2BfcwZu0U5x5El7mmggsTKak7MiU%2BOx%2FYpkjeCBr4Q%2F1%2Bs0X1y%2FzZHuBY%2F8W%2FHs6eUOjnkP66SKlmR6aRMOTDjcAGOq8CqAwM2Def0mAfT7Vats2t50PgV8eaUQQdm0%2FbnZQKy6I0V%2FCK2zo7a%2B69VhZL2njprn9tE1U9I3t4HnRfR3xMpDaN7uc1hdxfNNS7q7k54e0ESulwU%2B5qeJlh3m5SYId1H%2FrfNfBA2fAcgqJ%2BMbm28O3ntXzLlr99%2FLRXrYhK%2FbRaXoQkXLgeeUXFluVdjxnW%2BETpg7L1x%2BWULuiN3gWaHiA8afUb1henNoU5G7SE6vPNrbScohDO3MFFwhS8Dq6v4ATp775EOgjUFTZgwKLATu3YUsTB53i%2FVOTovSXX%2FVb6AIfbRg9fwW%2BQ2qEVW70uKgZKqhYIqmIWSPbwJ2drcZRRhAoPlSPKJ5opurucZdrL%2BqFwb0Ms%2FbMsKB%2FV4LS7NtgaORIQHJh4lqtfrENZ&X-Amz-Signature=b2e115e389e1daf5fa8d7125ca324c06a6ec1d9e9422e6ee2addd40a3c6804e0" alt="Post thumbnail" class="post-image">
+        <div class="post-content">
+          <span class="post-date">12 April 2025</span>
+          <h2 class="post-title">Memahami Keamanan Cloud Storage di Era Digital</h2>
+          <p class="post-excerpt">Dalam era digital saat ini, keamanan data menjadi prioritas utama. Mari pelajari cara mengamankan file di cloud storage dengan praktik terbaik.</p>
+          <div class="post-tags">
+            <span class="tag">Teknologi</span>
+            <span class="tag">Keamanan</span>
+            <span class="tag">Cloud</span>
+          </div>
+          <a href="#" class="read-more">Baca selengkapnya</a>
+        </div>
+      </article>
+      
+      <!-- Post 2 -->
+      <article class="post">
+        <img src="https://backup-blog-rafebyours.s3.us-east-1.amazonaws.com/minimalis.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAWCYYAAPZEK6Z3QGX%2F20250419%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250419T094222Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAIaCXVzLWVhc3QtMSJFMEMCIHLah7%2Fl6aEj6Pj5hdePoeaY4DrDNnpBQ58EoFuRsJmgAh9yqQV8%2FUVpDkmMKKkV006ZBojUepITH8XWcPpFZSpUKugCCIv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNDE4MjcyNzczMTA2IgzhBPjZec1R392ocjIqvALIr5zNGeMKcQSB9H3n5stn%2BiA9Hcx5luC53z%2BuIGNZP%2FJUhBLiJpr5VqXEhNVBexz%2FoJKUhF8aIwwW3i7AZyJjWHrm5fnE9mCG1FTx6D63ip%2BNJH6EuQffs9ZCNKsULicDOwe5aNzxENlbNNciShAn5CNXBAtAUVuE3uosxf9s88JbupaX01o%2Fur1lpI6UxdlaKJO2dDx3sVX0GS4N6DpINJTAKX8aJy%2BM5AQ95ugbOkNPZDpyRJBXmM%2FUpDj2l5%2FVzAKFiuFne3Q6LHIlN20nOdNK2Y5I8rHNE3exZ3pOPOdrhFiN4BTR3o7OWGzzyS%2BvRdb04KmB6DTk2WNQgvyV%2BfcwZu0U5x5El7mmggsTKak7MiU%2BOx%2FYpkjeCBr4Q%2F1%2Bs0X1y%2FzZHuBY%2F8W%2FHs6eUOjnkP66SKlmR6aRMOTDjcAGOq8CqAwM2Def0mAfT7Vats2t50PgV8eaUQQdm0%2FbnZQKy6I0V%2FCK2zo7a%2B69VhZL2njprn9tE1U9I3t4HnRfR3xMpDaN7uc1hdxfNNS7q7k54e0ESulwU%2B5qeJlh3m5SYId1H%2FrfNfBA2fAcgqJ%2BMbm28O3ntXzLlr99%2FLRXrYhK%2FbRaXoQkXLgeeUXFluVdjxnW%2BETpg7L1x%2BWULuiN3gWaHiA8afUb1henNoU5G7SE6vPNrbScohDO3MFFwhS8Dq6v4ATp775EOgjUFTZgwKLATu3YUsTB53i%2FVOTovSXX%2FVb6AIfbRg9fwW%2BQ2qEVW70uKgZKqhYIqmIWSPbwJ2drcZRRhAoPlSPKJ5opurucZdrL%2BqFwb0Ms%2FbMsKB%2FV4LS7NtgaORIQHJh4lqtfrENZ&X-Amz-Signature=2d0819f63d6b454ecc4a1a1f554983b048cbc6406f16a7dc41d05f6fd273dc6e" alt="Post thumbnail" class="post-image">
+        <div class="post-content">
+          <span class="post-date">8 April 2025</span>
+          <h2 class="post-title">Prinsip Desain Minimalis untuk Ruang Terbatas</h2>
+          <p class="post-excerpt">Bagaimana menerapkan konsep desain minimalis untuk memaksimalkan ruang terbatas di hunian urban? Temukan tips praktisnya.</p>
+          <div class="post-tags">
+            <span class="tag">Desain</span>
+            <span class="tag">Interior</span>
+            <span class="tag">Minimalis</span>
+          </div>
+          <a href="#" class="read-more">Baca selengkapnya</a>
+        </div>
+      </article>
+      
+      <!-- Post 3 -->
+      <article class="post">
+        <img src="https://backup-blog-rafebyours.s3.us-east-1.amazonaws.com/lombok.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAWCYYAAPZEK6Z3QGX%2F20250419%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250419T094315Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAIaCXVzLWVhc3QtMSJFMEMCIHLah7%2Fl6aEj6Pj5hdePoeaY4DrDNnpBQ58EoFuRsJmgAh9yqQV8%2FUVpDkmMKKkV006ZBojUepITH8XWcPpFZSpUKugCCIv%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMNDE4MjcyNzczMTA2IgzhBPjZec1R392ocjIqvALIr5zNGeMKcQSB9H3n5stn%2BiA9Hcx5luC53z%2BuIGNZP%2FJUhBLiJpr5VqXEhNVBexz%2FoJKUhF8aIwwW3i7AZyJjWHrm5fnE9mCG1FTx6D63ip%2BNJH6EuQffs9ZCNKsULicDOwe5aNzxENlbNNciShAn5CNXBAtAUVuE3uosxf9s88JbupaX01o%2Fur1lpI6UxdlaKJO2dDx3sVX0GS4N6DpINJTAKX8aJy%2BM5AQ95ugbOkNPZDpyRJBXmM%2FUpDj2l5%2FVzAKFiuFne3Q6LHIlN20nOdNK2Y5I8rHNE3exZ3pOPOdrhFiN4BTR3o7OWGzzyS%2BvRdb04KmB6DTk2WNQgvyV%2BfcwZu0U5x5El7mmggsTKak7MiU%2BOx%2FYpkjeCBr4Q%2F1%2Bs0X1y%2FzZHuBY%2F8W%2FHs6eUOjnkP66SKlmR6aRMOTDjcAGOq8CqAwM2Def0mAfT7Vats2t50PgV8eaUQQdm0%2FbnZQKy6I0V%2FCK2zo7a%2B69VhZL2njprn9tE1U9I3t4HnRfR3xMpDaN7uc1hdxfNNS7q7k54e0ESulwU%2B5qeJlh3m5SYId1H%2FrfNfBA2fAcgqJ%2BMbm28O3ntXzLlr99%2FLRXrYhK%2FbRaXoQkXLgeeUXFluVdjxnW%2BETpg7L1x%2BWULuiN3gWaHiA8afUb1henNoU5G7SE6vPNrbScohDO3MFFwhS8Dq6v4ATp775EOgjUFTZgwKLATu3YUsTB53i%2FVOTovSXX%2FVb6AIfbRg9fwW%2BQ2qEVW70uKgZKqhYIqmIWSPbwJ2drcZRRhAoPlSPKJ5opurucZdrL%2BqFwb0Ms%2FbMsKB%2FV4LS7NtgaORIQHJh4lqtfrENZ&X-Amz-Signature=ce4811889fc95392464211a0b7106355c3b835303724a7af89837842782853e4" alt="Post thumbnail" class="post-image">
+        <div class="post-content">
+          <span class="post-date">3 April 2025</span>
+          <h2 class="post-title">Menjelajahi Keindahan Tersembunyi Pulau Lombok</h2>
+          <p class="post-excerpt">Pulau Lombok menyimpan banyak keindahan tersembunyi yang belum banyak diketahui. Mari temukan destinasi eksotis di luar jalur wisata utama.</p>
+          <div class="post-tags">
+            <span class="tag">Perjalanan</span>
+            <span class="tag">Indonesia</span>
+            <span class="tag">Alam</span>
+          </div>
+          <a href="#" class="read-more">Baca selengkapnya</a>
+        </div>
+      </article>
+    </div>
+  </main>
+  
+  <footer>
+    <p>Rafebyours Blog</p>
+  </footer>
+
+  <script>
+    // Simple filter functionality
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const posts = document.querySelectorAll('.post');
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+        
+        // Get filter category
+        const filter = button.textContent;
+        
+        // Show/hide posts based on filter
+        if (filter === 'Semua') {
+          posts.forEach(post => post.style.display = 'block');
+        } else {
+          posts.forEach(post => {
+            const tags = post.querySelectorAll('.tag');
+            let matches = false;
+            
+            tags.forEach(tag => {
+              if (tag.textContent === filter) {
+                matches = true;
+              }
+            });
+            
+            post.style.display = matches ? 'block' : 'none';
+          });
+        }
+      });
+    });
+    
+    // Simple search functionality
+    const searchInput = document.querySelector('.search-input');
+    
+    searchInput.addEventListener('input', () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      
+      posts.forEach(post => {
+        const title = post.querySelector('.post-title').textContent.toLowerCase();
+        const excerpt = post.querySelector('.post-excerpt').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
+          post.style.display = 'block';
+        } else {
+          post.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
