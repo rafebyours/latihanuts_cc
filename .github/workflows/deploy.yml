@@ -22,7 +22,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ec2-user@54.227.108.20 << 'EOF'
             cd /usr/share/nginx/html/latihanuts_cc
-            git pull origin main
+            sudo git pull origin main
             sudo systemctl restart nginx
           EOF
 
